@@ -1,0 +1,35 @@
+<launch>  
+
+    <arg name="veh" default="" />
+    <arg name="visual" default="false"/>
+
+    <!-- zed camera -->
+    <arg name="camera" default="false" doc="camera set to false means you can play a log data as testing"/>   
+
+    <!-- placard cnn end-to-end classification -->
+    <arg name="image_topic" default="rgb/image_rect_color" doc="rostopic of image message"/>
+    <arg name="model_name" default="green_circle_end_to_end_bamboolake_caffenet"/> 
+    <arg name="save_result_cnn" default="false"/>
+    <arg name="top1_threshold" default="0.01"/>
+    <arg name="diff_threshold" default="1000"/>
+    <arg name="gazebo" default="false"/>
+    <arg name="cpu" default="false"/>
+
+    <!-- zed camera -->
+    <include if="$(arg camera)" file="$(find robotx)/launch/zed_single.launch">
+    </include> 
+
+    <!-- placard cnn end to end endclassification -->
+    <remap from="cnn_end_to_end_caffe_node/raw_image" to="$(arg image_topic)"/> 
+    <include file="$(find placard_classification)/launch/cnn_end_to_end_caffe_node.launch">
+        <arg name="veh" value="$(arg veh)"/>
+        <arg name="model_name" value="$(arg model_name)"/>
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="save_result" value="$(arg save_result_cnn)"/>
+        <arg name="top1_threshold" value="$(arg top1_threshold)"/> 
+        <arg name="diff_threshold" value="$(arg diff_threshold)"/> 
+        <arg name="gazebo" value="$(arg gazebo)"/>  
+        <arg name="cpu" value="$(arg cpu)"/>  
+    </include>          
+   
+</launch>

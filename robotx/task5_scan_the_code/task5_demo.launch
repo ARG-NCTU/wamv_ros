@@ -1,0 +1,97 @@
+<launch>  
+    <!--Arg:
+        visual:               result visualization, such as printing, images, pointcloud
+            
+        preprocessing_factor  the param file name of pcl preprocessing node
+        preprocessing_with_gps whether filter_with_gps
+
+        camera_param:         the param file name of lidar to camera transformation matrix and camera info
+                              rosrun tf tf_echo /camera_frame /velodyne_frame
+        image_partition       The ROI partition number
+                              ex: 2, will get upper half roi image
+                              ex: 3, will get upper 1/3 roi image
+        invert                whether camera need to be inverted
+        rect                  whether image is rect image  
+
+        color_param:          the param file name of HSV color range
+
+        sim                   whether is simulation
+        target_dis            the thresohold distance of WAM-V and light buoy
+        target_angle          the thresohold degree of WAM-V and light buoy
+    -->  
+
+    <arg name="visual" default="false"/>
+
+    <!-- pcl_map -->
+    <arg name="preprocessing_factor" default="bamboo_lake"/>
+    <arg name="preprocessing_with_gps" default="true"/>
+    <arg name="classify" default="true"/>
+
+    <!-- image roi -->
+    <arg name="camera_param" default="zed_1080p"/>
+    <arg name="image_partition" default="2"/>
+    <arg name="rect" default="true"/>
+    <arg name="invert" default="false"/>
+    <arg name="mask_size" default="30"/>
+    
+    <!-- hsv color detect-->  
+    <arg name="color_param" default="light_buoy_color_range"/>
+
+    <!-- sequence detect -->
+    <arg name="frame_rate" default="3"/>
+
+    <!-- move_lightbuoy -->
+    <arg name="target_dis" default="10"/>
+    <arg name="target_angle" default="25.0"/>
+    <arg name="tolerance" default="6.0"/>
+    <arg name="sim" default="true"/>
+    <arg name="linear_speed" default="0.4"/>
+    <arg name="angular_speed" default="0.2"/>
+
+    <!-- PointCloud map -->
+    <!--include file="$(find velodyne_perception)/launch/pcl_map.launch">
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="preprocessing_factor" value="$(arg preprocessing_factor)"/>
+        <arg name="preprocessing_with_gps" value="$(arg preprocessing_with_gps)"/>
+        <arg name="classify" value="$(arg classify)"/>
+    </include-->
+
+    <!-- Move to light buoy -->
+    <!--remap from="move_lightbuoy_bywayt/motor_cmd" to="/cmd_drive"/-->
+    <include file="$(find move_light_buoy)/launch/move_lightbuoy_new.launch">
+        <arg name="visual"     value="$(arg visual)"/>
+        <arg name="target_dis"    value="$(arg target_dis)"/>
+        <arg name="target_angle"  value="$(arg target_angle)"/>
+        <arg name="sim"  value="$(arg sim)"/>
+        <arg name="linear_speed" value="$(arg linear_speed)"/>
+        <arg name="angular_speed" value="$(arg angular_speed)"/>
+    </include>  
+
+    <!-- Extract image roi -->
+    <remap from="image_roi_extraction/arrive_target" to="move_lightbuoy/arrive_buoy"/>
+    <remap from="image_roi_extraction/obj" to="move_lightbuoy/obj"/>
+    <remap from="image_roi_extraction/image_raw" to="/camera/left/image_raw/compressed"/>
+    <include file="$(find image_roi_extraction)/launch/image_roi_extraction_without_filter.launch">
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="camera_param" value="$(arg camera_param)"/>
+        <arg name="image_partition" value="$(arg image_partition)"/>
+        <arg name="rect" value="$(arg rect)"/>
+        <arg name="invert" value="$(arg invert)"/>
+        <arg name="mask_size" value="$(arg mask_size)"/>
+    </include> 
+
+    <!-- Color detect by HSV -->
+    <remap from="color_detect_hsv/image" to="image_roi_extraction/image_roi"/>
+    <include file="$(find zed_perception)/launch/color_detect_hsv.launch">
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="color_param" value="$(arg color_param)"/>
+    </include>    
+
+    <!-- Light buoy sequence detector-->
+    <remap from="buoy_sequence_detect/color" to="color_detect_hsv/color"/>
+    <include file="$(find zed_perception)/launch/buoy_sequence_detect.launch">
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="frame_rate" value="$(arg frame_rate)"/>
+    </include>    
+
+</launch>

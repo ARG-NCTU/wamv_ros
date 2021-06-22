@@ -1,0 +1,7 @@
+# Request: The angle estimation process will be triggered by intputing any number
+int32 command
+---
+# return process state and angle
+# clockwise angle --> positive
+int32 process_state
+float32 angle

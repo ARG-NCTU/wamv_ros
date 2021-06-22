@@ -1,0 +1,12 @@
+<launch>
+  <arg name="port" default="/dev/ttyUSB0" />
+  <arg name="baud" default="57600" />
+  <!-- 4800 g-start -->
+  <!-- 57600 locosys -->
+
+  <node pkg="nmea_navsat_driver" type="nmea_serial_driver.py" name="nmea_serial_driver" output="screen">
+    <param name="port" value="$(arg port)" />
+    <param name="baud" value="$(arg baud)"/>
+  </node>
+
+</launch>

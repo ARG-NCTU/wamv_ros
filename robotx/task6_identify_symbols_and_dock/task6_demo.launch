@@ -1,0 +1,125 @@
+<launch>  
+
+    <arg name="multi_classify" default="false"/>
+    <arg name="multi_motion" default="false"/>
+    <arg name="visual" default="false"/>
+    <arg name="cpu" default="false"/> 
+
+    <!-- control center -->
+    <arg name="target_placard" /> 
+    <arg name="checking_number" default="100"/> 
+    <arg name="gazebo" default="false"/> 
+     <arg name="task7" default="false"/> 
+        
+    <!-- mser region proposal -->
+    <arg name="mser_th" default="10" doc="contrast threshold of mser"/> 
+    <arg name="frame_division" default="1" doc="contrast threshold of mser"/>
+
+    <!-- placard cnn classification -->
+    <!--arg name="classify_model_name" default="10_classes_robotx_duckietown_caffenet"/--> 
+    <arg name="classify_model_name" default="10-class-new"/> 
+    <arg name="classify_top1_threshold" default="0.9"/>
+    <arg name="classify_diff_threshold" default="100"/>
+
+
+    <!-- motion cnn classification -->
+    <arg name="motion_model_name" default="7-class-motion"/> 
+    <arg name="motion_top1_threshold" default="0.01"/>
+    <arg name="motion_diff_threshold" default="1000"/>
+
+    <!-- remap for classification -->
+    <remap from="/task6_center_node/classification_result_left" to="/zed_left/cnn_classifier_caffe_node/classification_result"/>
+    <remap from="/task6_center_node/classification_result_mid" to="/zed_mid/cnn_classifier_caffe_node/classification_result"/>
+    <remap from="/task6_center_node/classification_result_right" to="/zed_right/cnn_classifier_caffe_node/classification_result"/>
+    <remap from="/zed_mid/cnn_classifier_caffe_node/prediction_switch" to="/task6_center_node/prediction_switch_mid"/>
+    <remap from="/zed_left/cnn_classifier_caffe_node/prediction_switch" to="/task6_center_node/prediction_switch_left"/> 
+    <remap from="/zed_right/cnn_classifier_caffe_node/prediction_switch" to="/task6_center_node/prediction_switch_right"/> 
+    <!-- remap for motion classification -->
+
+    <remap from="/task6_center_node/ete_classification_result_mid" to="/zed_mid/cnn_end_to_end_caffe_node/ete_classification_result"/>
+    <remap from="/task6_center_node/ete_classification_result_left" to="/zed_left/cnn_end_to_end_caffe_node/ete_classification_result"/>
+    <remap from="/task6_center_node/ete_classification_result_right" to="/zed_right/cnn_end_to_end_caffe_node/ete_classification_result"/>
+    <remap from="/zed_mid/cnn_end_to_end_caffe_node/ete_prediction_switch" to="/task6_center_node/ete_prediction_switch_mid"/>
+    <remap from="/zed_left/cnn_end_to_end_caffe_node/ete_prediction_switch" to="/task6_center_node/ete_prediction_switch_left"/>
+    <remap from="/zed_right/cnn_end_to_end_caffe_node/ete_prediction_switch" to="/task6_center_node/ete_prediction_switch_right"/>
+    
+
+    <include file="$(find placard_classification)/launch/task6_center_node.launch">
+        <arg name="model_name" value="$(arg classify_model_name)"/>
+        <arg name="target_placard" value="$(arg target_placard)"/>
+        <arg name="checking_number" value="$(arg checking_number)"/>
+        <arg name="gazebo" value="$(arg gazebo)"/>
+        <arg name="task7" value="$(arg task7)"/>
+    </include>
+
+    <include file="$(find robotx)/task6_identify_symbols_and_dock/task6_demo_zed.launch">
+        <arg name="veh" value="zed_mid"/>
+        <arg name="mser_th" value="$(arg mser_th)"/>
+        <arg name="frame_division" value="$(arg frame_division)"/>
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="model_name" value="$(arg classify_model_name)"/>
+        <arg name="top1_threshold" value="$(arg classify_top1_threshold)"/>
+        <arg name="diff_threshold" value="$(arg classify_diff_threshold)"/>
+        <arg name="cpu" value="$(arg cpu)"/> 
+    </include>
+         
+    <group if="$(arg multi_classify)">     
+    <include file="$(find robotx)/task6_identify_symbols_and_dock/task6_demo_zed.launch">
+        <arg name="veh" value="zed_left"/>
+        <arg name="mser_th" value="$(arg mser_th)"/>
+        <arg name="frame_division" value="$(arg frame_division)"/>
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="model_name" value="$(arg classify_model_name)"/>
+        <arg name="top1_threshold" value="$(arg classify_top1_threshold)"/>
+        <arg name="diff_threshold" value="$(arg classify_diff_threshold)"/>
+        <arg name="cpu" value="$(arg cpu)"/> 
+    </include>
+
+    <include file="$(find robotx)/task6_identify_symbols_and_dock/task6_demo_zed.launch">
+        <arg name="veh" value="zed_right"/>
+        <arg name="mser_th" value="$(arg mser_th)"/>
+        <arg name="frame_division" value="$(arg frame_division)"/>
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="model_name" value="$(arg classify_model_name)"/>
+        <arg name="top1_threshold" value="$(arg classify_top1_threshold)"/>
+        <arg name="diff_threshold" value="$(arg classify_diff_threshold)"/>
+        <arg name="cpu" value="$(arg cpu)"/> 
+    </include>
+    </group>
+
+    <!-- end-to-end motion prediction-->
+
+
+    <include file="$(find robotx)/task6_identify_symbols_and_dock/task6_demo_ete_zed.launch">
+        <arg name="veh" value="zed_mid"/>
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="model_name" value="$(arg motion_model_name)"/>
+        <arg name="top1_threshold" value="$(arg motion_top1_threshold)"/>
+        <arg name="diff_threshold" value="$(arg motion_diff_threshold)"/>
+        <arg name="cpu" value="$(arg cpu)"/> 
+    </include>  
+
+    <group if="$(arg multi_motion)">
+    <include file="$(find robotx)/task6_identify_symbols_and_dock/task6_demo_ete_zed.launch">
+        <arg name="veh" value="zed_left"/>
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="model_name" value="$(arg motion_model_name)"/>
+        <arg name="top1_threshold" value="$(arg motion_top1_threshold)"/>
+        <arg name="diff_threshold" value="$(arg motion_diff_threshold)"/>
+        <arg name="cpu" value="$(arg cpu)"/> 
+    </include> 
+
+    <include file="$(find robotx)/task6_identify_symbols_and_dock/task6_demo_ete_zed.launch">
+        <arg name="veh" value="zed_right"/>
+        <arg name="visual" value="$(arg visual)"/>
+        <arg name="model_name" value="$(arg motion_model_name)"/>
+        <arg name="top1_threshold" value="$(arg motion_top1_threshold)"/>
+        <arg name="diff_threshold" value="$(arg motion_diff_threshold)"/>
+        <arg name="cpu" value="$(arg cpu)"/> 
+    </include>     
+    </group>
+
+    <node name="task6" pkg="robotx" type="task6_identify_symbols_and_dock.py"  output="screen" clear_params="true" required="true">
+    </node>
+
+</launch>

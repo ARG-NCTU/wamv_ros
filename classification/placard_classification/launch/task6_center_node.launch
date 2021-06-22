@@ -1,0 +1,21 @@
+<launch>
+    <arg name="model_name" default="4_classes_gazebo_caffenet"/> 
+    <arg name="target_placard" /> 
+    <arg name="checking_number" default="100"/> 
+    <arg name="gazebo" default="false"/> 
+    <arg name="task7" default="false"/> 
+    <arg name="node_name" default="task6_center_node"/>
+    <arg name="pkg_name" default="placard_classification"/>
+
+    <!-- Caffe prediction -->
+
+    <node name="$(arg node_name)" pkg="$(arg pkg_name)" type="$(arg node_name).py"  output="screen" clear_params="true" required="true">
+        <param name="model_name" value="$(arg model_name)"/>
+        <param name="target_placard" value="$(arg target_placard)"/>
+        <param name="checking_number" value="$(arg checking_number)"/>
+        <param name="gazebo" value="$(arg gazebo)"/>
+        <param name="task7" value="$(arg task7)"/>
+    </node>
+
+
+</launch>

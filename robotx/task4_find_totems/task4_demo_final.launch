@@ -1,0 +1,20 @@
+<launch>  
+    <arg name="sim" default="false"/>
+
+    <group if="$(arg sim)">
+        <remap from="task4/image_compressed" to="/zed_mid/rgb/image_rect_color/compressed"/>
+        <node name="task4" pkg="robotx" type="task4_find_totem_no_waypoint.py"  output="screen" clear_params="true" required="true">
+            <param name="sim" value="$(arg sim)"/>
+        </node>
+    </group>
+    <group unless="$(arg sim)">
+        <remap from="task4/image_compressed" to="/camera/left/image_raw/compressed"/>
+        <node name="task4" pkg="robotx" type="task4_find_totem_no_waypoint.py"  output="screen" clear_params="true" required="true">
+            <param name="sim" value="$(arg sim)"/>
+        </node>
+    </group>
+
+    <!--node name="keyboard_buoy" pkg="zed_perception" type="keyboard.py"  output="screen" clear_params="true" required="true"/-->
+
+
+</launch>

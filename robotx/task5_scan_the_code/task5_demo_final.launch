@@ -1,0 +1,24 @@
+<launch>  
+    <arg name="sim" default="false"/>
+    <arg name="frame_rate" default="5"/>
+
+    <group if="$(arg sim)">
+        <remap from="task5/image_compressed" to="/zed_mid/rgb/image_rect_color/compressed"/>
+        <node name="task5" pkg="robotx" type="task5_no_any_motion.py"  output="screen" clear_params="true" required="true">
+            <param name="sim" value="$(arg sim)"/>
+            <param name="frame_rate" value="$(arg frame_rate)"/>
+        </node>
+    </group>
+    <group unless="$(arg sim)">
+        <remap from="task5/image_compressed" to="/zed_mid/left/image_rect_color/compressed"/>
+        <node name="task5" pkg="robotx" type="task5_no_any_motion.py"  output="screen" clear_params="true" required="true">
+            <param name="sim" value="$(arg sim)"/>
+            <param name="frame_rate" value="$(arg frame_rate)"/>
+        </node>
+    </group>
+
+    <!--node name="keyboard_buoy" pkg="zed_perception" type="keyboard.py"  output="screen" clear_params="true" required="true"/-->
+
+    
+
+</launch>

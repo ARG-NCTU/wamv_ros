@@ -1,0 +1,8 @@
+<launch>   
+    <!-- Task1 -->
+    <node name="task1_qualifying" pkg="robotx" type="task1_qualifying.py"  output="screen" >
+    </node>
+    <!-- PID control -->
+    <node name="WAMV_PID_controller" pkg="PID_control" type="WAMV_PID_controller.py">
+    </node>
+</launch>
