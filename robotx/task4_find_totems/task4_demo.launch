@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<launch>
-
-  <remap from="totem_circling/obj_list" to="/obj_list/odom"/>
-  <remap from="totem_circling/image_raw_compressed" to="/camera/left/image_raw/compressed"/>
-	<include file="$(find totem_circle)/launch/totem_circling.launch">
-  </include>
-
-</launch>

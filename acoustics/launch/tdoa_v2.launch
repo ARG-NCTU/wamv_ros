@@ -1,7 +1,0 @@
-<launch>
-    <arg name="yaml_file" default="tdoa_params"/>
-
-    <node name="tdoa_v2" pkg="acoustics" type="tdoa_v2.py" output="screen" clear_params="true" required="true">
-        <rosparam command="load" file="$(find acoustics)/config/$(arg yaml_file).yaml" />
-    </node>
-</launch>

@@ -1,5 +1,0 @@
-<launch>  
-    <node name="task2" pkg="robotx" type="task2_entrance_and_exit_gates.py"  output="screen" clear_params="true" required="true">
-    </node>
-
-</launch>
