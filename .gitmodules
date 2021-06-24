@@ -1,0 +1,6 @@
+[submodule "acoustic"]
+	path = acoustic
+	url = git@github.com:ARG-NCTU/acoustic_tdoa.git
+[submodule "wamv_robotx2018"]
+	path = wamv_robotx2018
+	url = git@github.com:ARG-NCTU/wamv_robotx2018.git
