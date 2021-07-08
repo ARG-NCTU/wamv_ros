@@ -96,12 +96,6 @@ generate_dynamic_reconfigure_options(
     cfg/pos_PID.cfg
     cfg/ang_PID.cfg
     cfg/lookahead.cfg
-    cfg/pos_loco_PID.cfg
-    cfg/ang_loco_PID.cfg
-    cfg/pos_jackal_PID.cfg
-    cfg/ang_jackal_PID.cfg
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
 )
 
 ###################################

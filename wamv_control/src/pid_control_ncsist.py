@@ -8,7 +8,7 @@ from sensor_msgs.msg import Joy
 from geometry_msgs.msg import PoseArray, Pose, PoseStamped, Point, Twist
 from visualization_msgs.msg import Marker, MarkerArray
 from dynamic_reconfigure.server import Server
-from control.cfg import pos_PIDConfig, ang_PIDConfig
+from wamv_control.cfg import pos_PIDConfig, ang_PIDConfig
 from std_srvs.srv import SetBool, SetBoolResponse
 from nav_msgs.msg import Odometry
 from PID import PID_control
