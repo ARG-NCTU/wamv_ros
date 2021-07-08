@@ -1,0 +1,9 @@
+# tf_prefix: wamv
+frequency: 10
+magnetic_declination_radians: 0
+broadcast_utm_transform: true
+wait_for_datum: true
+use_odometry_yaw: true
+datum: [24.788808, 121.000188, 0]
+yaw_offset: 0
+publish_filtered_gps: true

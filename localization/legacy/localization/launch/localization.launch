@@ -1,0 +1,8 @@
+<launch>
+  <!-- Static transform -->
+  <include file="$(find localization)/launch/static_tf.launch"/>
+
+  <!-- ekf -->
+  <node pkg="localization" type="gps_utm.py" name="gps_utm" output="screen" clear_params="true" required="true"/>
+
+</launch>
