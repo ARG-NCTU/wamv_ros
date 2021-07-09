@@ -1,0 +1,14 @@
+<launch>
+
+  <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" clear_params="true">
+    <rosparam command="load" file="$(find robot_localization)/params/wam_v_navsat_gazebo.yaml" />
+    <remap from="gps/fix" to="wamv/sensors/gps/gps/fix"/>
+
+  </node>
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+    <rosparam command="load" file="$(find robot_localization)/params/wam_v_ekf_gazebo.yaml" />
+
+  </node>
+
+</launch>

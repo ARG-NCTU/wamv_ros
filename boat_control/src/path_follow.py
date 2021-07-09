@@ -30,7 +30,7 @@ class Navigation(object):
         # single circle
         cencter = [28.208, -22.517]
         radius = 10
-        start_angle = 120
+        start_angle = 135
         self.circle_path = Path()
         self.circle_path.header.frame_id = self.frame_id
         for d in range(360):
@@ -42,7 +42,7 @@ class Navigation(object):
             self.circle_path.poses.append(p)
 
         # double circle
-        counter_radius = 6
+        counter_radius = 10
         counter_center = [
             cencter[0]+(radius+counter_radius)*math.cos(math.radians(start_angle)),
             cencter[1]+(radius+counter_radius)*math.sin(math.radians(start_angle))
@@ -62,7 +62,7 @@ class Navigation(object):
         self.duoble_circle_path.poses = self.circle_path.poses + poses
         
         # set path
-        self.path_set = self.circle_path
+        self.path_set = self.duoble_circle_path
         self.pursuit.set_path(self.path_set)
     
         # subscriber

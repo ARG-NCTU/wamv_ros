@@ -1,0 +1,9 @@
+<launch>
+  <arg name="file_name" default="gps_data"/>
+
+  <remap from="gps_bag_to_txt/fix" to="/fix"/>
+  <node pkg="localization" type="gps_bag_to_txt.py" name="gps_bag_to_txt" output="screen" clear_params="true" required="true">
+	<param name="file_name" value="$(arg file_name)"/>
+  </node>
+
+</launch>

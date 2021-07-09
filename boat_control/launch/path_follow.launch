@@ -5,10 +5,10 @@
   </node>
 
   <!-- load pid -->
-  <node name="load_position_pid" pkg="dynamic_reconfigure" type="dynparam" args="load /boat_pid_control/Position $(find control)/params/wamv/position.yaml" />
-  <node name="load_position_station_pid" pkg="dynamic_reconfigure" type="dynparam" args="load /boat_pid_control/Angular $(find control)/params/wamv/angular.yaml" />
-  <node name="load_angular_pid" pkg="dynamic_reconfigure" type="dynparam" args="load /boat_pid_control/Position_station $(find control)/params/wamv/position_station.yaml" />
-  <node name="load_angular_station_pid" pkg="dynamic_reconfigure" type="dynparam" args="load /boat_pid_control/Angular_station $(find control)/params/wamv/angular_station.yaml" />
+  <node name="load_position_pid" pkg="dynamic_reconfigure" type="dynparam" args="load /boat_pid_control/Position $(find wamv_control)/params/wamv/position.yaml" />
+  <node name="load_position_station_pid" pkg="dynamic_reconfigure" type="dynparam" args="load /boat_pid_control/Angular $(find wamv_control)/params/wamv/angular.yaml" />
+  <node name="load_angular_pid" pkg="dynamic_reconfigure" type="dynparam" args="load /boat_pid_control/Position_station $(find wamv_control)/params/wamv/position_station.yaml" />
+  <node name="load_angular_station_pid" pkg="dynamic_reconfigure" type="dynparam" args="load /boat_pid_control/Angular_station $(find wamv_control)/params/wamv/angular_station.yaml" />
 
   <!-- path setting -->
   <node pkg="boat_control" type="path_follow.py" name="path_follow" output="screen" />

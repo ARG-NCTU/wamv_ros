@@ -1,0 +1,16 @@
+<launch>
+  <!-- Static transform -->
+  <!--include file="$(find localization)/launch/static_tf_gazebo.launch"/-->
+  <!-- Topic remap for gazebo -->
+  <node pkg="localization" name="vel_remap_node" type="vel_remap_gazebo.py" clear_params="true"/>
+  <!-- EKF -->
+  <include file="$(find robot_localization)/_launch/wam_v_ekf_gazebo.launch"/>
+  <!-- Navsat -->
+  <include file="$(find robot_localization)/_launch/wam_v_navsat_gazebo.launch"/>
+  <!-- Set waypoints server -->
+  <include file="$(find localization)/launch/set_wps_server_gazebo.launch"/>
+  <!-- Visual -->
+  <include file="$(find visualization)/launch/visual.launch"/>
+  <!-- RViz -->
+  <!--node pkg="rviz" type="rviz" name="rviz" args="$(find visualization)/rviz/localization.rviz"/-->
+</launch>

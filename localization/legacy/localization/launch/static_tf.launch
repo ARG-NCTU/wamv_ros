@@ -1,0 +1,9 @@
+<launch>
+  <!-- Static transform -->
+  <!-- In Gazebo, we only need base_link -> imu -->
+  <!-- base_link -> imu_link -->
+  <node pkg="tf" type="static_transform_publisher" name="imu_link_broadcaster" args="-0.2 -0.25 0 0 0 0 base_link imu_link 100"/>
+  <!-- base_link -> gps -->
+  <node pkg="tf" type="static_transform_publisher" name="gps_link_broadcaster" args="0 0 0 0 0 0 base_link gps 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="velodyne_link_broadcaster_a" args="0 0 0.09 0 0 0 base_link velodyne 100"/>
+</launch>
