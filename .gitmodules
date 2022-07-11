@@ -7,6 +7,3 @@
 [submodule "acoustic_tdoa"]
 	path = acoustic_tdoa
 	url = git@github.com:ARG-NCTU/acoustic_tdoa.git
-[submodule "wamv_motor_control"]
-	path = wamv_motor_control
-	url = git@github.com:ARG-NCTU/wamv_motor_control.git
