@@ -1,0 +1,4 @@
+<launch>
+  <node name="joy_stick" pkg="joy" type="joy_node"/>
+  <node name="aqmd6030ns" pkg="aqmd6030ns" type="aqmd6030ns_controller.py"/>
+</launch>

@@ -1,0 +1,8 @@
+<launch>
+  <!--<node name="logitech_gamepad_F710" pkg="joy" type="joy_node"/>-->
+  <node name="roboteq_hdc2460" pkg="roboteq_controller" type="hdc2460_control_joystick_visual.py" output="screen" clear_params="true"/>
+  
+  <node name="visual_feedback" pkg="visual_feedback" type="visual_feedback.py" output="screen" clear_params="true" />
+  <node name="safe_sub" pkg="roboteq_controller" type="safe_sub.py" output="screen" clear_params="true" />
+
+</launch>

@@ -1,0 +1,14 @@
+<launch>
+  <arg name="veh" doc="Name of vehicle. ex: nibot"/>
+  <arg name="local" default="true" doc="true for laptop. false for robot"/>
+
+  <arg name="pkg_name" default="visual_feedback"/>
+  <arg name="node_name" default="visual_feedback"/>
+
+  <!-- run local -->
+  <node if="$(arg local)" name="$(arg node_name)" pkg="$(arg pkg_name)" type="$(arg node_name).py" output="screen" clear_params="true" >
+  </node>
+
+  <!-- run remote -->
+
+</launch>
