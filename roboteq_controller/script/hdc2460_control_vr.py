@@ -1,9 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import rospy
 from robotx_msgs.msg import roboteq_drive
 from sensor_msgs.msg import Joy
 from std_msgs.msg import *
+from std_msgs.msg import Float32MultiArray
 from roboteq_controller.msg import hdc2460_msgs
 from roboteq_controller.srv import estop_srv, estop_srvResponse
 import re
@@ -12,7 +13,7 @@ import serial
 class MyDriver:
   def __init__(self):
     self.port = serial.Serial(\
-                  "/dev/ttyACM0", 115200, timeout=1,\
+                  "/dev/ttyACM1", 115200, timeout=1,\
                   parity=serial.PARITY_NONE,\
                   stopbits=serial.STOPBITS_ONE,\
                   bytesize=serial.EIGHTBITS)
@@ -23,13 +24,16 @@ class MyDriver:
     self.estop = False
     self.ch1_pwm = 0
     self.ch2_pwm = 0
+    self.count = 0
 
-    self.sub = rospy.Subscriber("/joy", Joy, self.JoyCallback, queue_size=1)
+    self.motor_adjust = 0.8
+
+    self.sub = rospy.Subscriber("/boat/vr_joy", Float32MultiArray, self.JoyCallback, queue_size=1)
     self.sub = rospy.Subscriber("/cmd_drive", roboteq_drive, self.CmdCallback, queue_size=1)
     self.pub = rospy.Publisher("/hdc2460_info", hdc2460_msgs, queue_size=1)
     self.srv = rospy.Service('/hdc2460_estop', estop_srv, self.SetEstop)
     self.msg = hdc2460_msgs()
-    self.safe_flag = False
+    self.safe_flag = True
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
       '''
@@ -48,7 +52,6 @@ class MyDriver:
         self.msg = hdc2460_msgs([mcu, ch1, ch2])
       self.pub.publish(self.msg)
       '''
-      print self.ch1_pwm, self.ch2_pwm
       # Motor's pwm command
       command = "!M " + str(self.ch1_pwm) +\
                 " " + str(self.ch2_pwm) + "\r"
@@ -58,37 +61,38 @@ class MyDriver:
 
   def CmdCallback(self, msg):
     if self.safe_flag == False:
-      print "cb"  
-      if msg.left<990 and msg.left>-990:
-        self.ch2_pwm = msg.left
-      else:
-        self.ch2_pwm = (msg.left/abs(msg.left))*990
-      if msg.right<990 and msg.right>-990:
-        self.ch1_pwm = msg.right
-      else:
-        self.ch1_pwm = (msg.right/abs(msg.right))*990
+      print("cb")
+      self.ch1_pwm = (msg.linear.x/abs(msg.linear.x))
+      self.ch1_pwm *= 990*self.motor_adjust
+      self.ch2_pwm = 0
+      if not (self.ch1_pwm < 990 and self.ch1_pwm > -990):
+        self.ch1_pwm = (self.ch1_pwm/abs(self.ch1_pwm))*990*self.motor_adjust
   
   def JoyCallback(self, msg):
-   
-    if msg.buttons[7] == 1:
-        self.safe_flag = not self.safe_flag
-        if self.safe_flag == True:
-          print "joystick mode"
-        else:
-          print "autonomous mode"
+
+    # mode button TBD
+
+    #if msg.data[7] == 1:
+    #    self.safe_flag = not self.safe_flag
+    #    if self.safe_flag == True:
+    #      print "joystick mode"
+    #    else:
+    #      print "autonomous mode"
+
     if self.safe_flag == True:
-        a = msg.axes[1]
-        alpha = msg.axes[3]*0.785
-        self.ch1_pwm = int(((2*a-alpha*2.44))*400)
-        self.ch2_pwm = int(((2*a+alpha*2.44))*400)
-	if self.ch1_pwm<990 and self.ch1_pwm>-990:
-          self.ch1_pwm = self.ch1_pwm
-        else:
-          self.ch1_pwm = (self.ch1_pwm/abs(self.ch1_pwm))*990
-        if self.ch2_pwm<990 and self.ch2_pwm>-990:
-          self.ch2_pwm = self.ch2_pwm
-        else:
-          self.ch2_pwm = (self.ch2_pwm/abs(self.ch2_pwm))*990
+        a = msg.data[0]
+        self.ch1_pwm = int(a*990*self.motor_adjust)
+        self.ch2_pwm = 0
+
+        self.count = self.count +1
+        if self.count % 20 == 0 :
+            print("big motor : " + str(self.ch1_pwm))
+            self.count = 0
+
+        if self.ch1_pwm<990 and self.ch1_pwm>-990 :
+            self.ch1_pwm = self.ch1_pwm
+        else :
+            self.ch1_pwm = (self.ch1_pwm/abs(self.ch1_pwm))*990*self.motor_adjust
 
   def SetEstop(self, req):
     command = "!EX\r"if req.enable_estop.data else "!MG\r"
