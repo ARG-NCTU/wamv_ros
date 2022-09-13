@@ -1,6 +1,0 @@
-<launch>
-  <!-- GPS -->
-  <include file="$(find vector_gps)/launch/gps.launch"/>
-  <!-- IMU -->
-  <include file="$(find sbg_driver)/launch/sbg_ellipseN.launch"/>
-</launch>
