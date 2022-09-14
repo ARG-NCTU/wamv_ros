@@ -9,7 +9,7 @@ from geometry_msgs.msg import PoseStamped, Twist
 from sensor_msgs.msg import LaserScan, Joy
 from std_msgs.msg import Bool
 from scipy.spatial.transform import Rotation as R
-
+import yaml
 
 class GoalNav(object):
     def __init__(self):
@@ -18,8 +18,10 @@ class GoalNav(object):
         self.laser_n = 4
         self.pos_n = 10
         self.frame = rospy.get_param("~frame", "odom")
+        self.mission = rospy.get_param("~mission", "path_following")
+        self.goal_dis = rospy.get_param("~goal_dis", 4)
         self.action_scale = {'linear': rospy.get_param(
-            '~linear_scale', 0.25), 'angular': rospy.get_param("~angular_scale", 0.25)}
+            '~linear_scale', 0.45), 'angular': rospy.get_param("~angular_scale", 0.45)}
         #0.5
         self.auto = 0
         self.goal = None
@@ -42,7 +44,11 @@ class GoalNav(object):
         gpu = tf.config.experimental.list_physical_devices('GPU')
         tf.config.experimental.set_memory_growth(gpu[0], True)
         my_dir = os.path.abspath(os.path.dirname(__file__))
-        model_path = os.path.join(my_dir, "../model/vrx-v2/snapshots/policy")
+        if self.mission == "path_following":
+            model_path = os.path.join(my_dir, "../model/vrx-v2/snapshots/policy")
+        elif self.mission == "docking":
+            model_path = os.path.join(my_dir, "../model/docking-v3/snapshots/policy")
+        
         self.policy_network = tf.saved_model.load(model_path)
 
         # pub cmd
@@ -67,7 +73,6 @@ class GoalNav(object):
     def cb_joy(self, msg):
         start_button = 7
         back_button = 6
-
         if (msg.buttons[start_button] == 1) and not self.auto:
             self.auto = 1
             rospy.loginfo('go auto')
@@ -158,7 +163,7 @@ class GoalNav(object):
             return
 
         dis = np.linalg.norm(self.goal-self.last_pos)
-        if dis < 4:
+        if dis < self.goal_dis:
             rospy.loginfo("goal reached")
             self.goal = None
             cmd = Twist()
