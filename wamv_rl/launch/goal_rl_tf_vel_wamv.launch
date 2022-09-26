@@ -5,7 +5,7 @@
     <arg name="veh" default="wamv" />
     <arg name="cmd" default="cmd_vel" />
     <arg name="joy" default="/joy" />
-    <arg name="goal_dis" default="5" />
+    <arg name="goal_dis" default="4" />
     <arg name="mission" default="path_following" />
     <arg name="frame" default="map" />
     <arg name="linear_scale" default="0.3" />
