@@ -30,7 +30,7 @@ class MyDriver:
     self.pub = rospy.Publisher("/hdc2460_info", hdc2460_msgs, queue_size=1)
     self.srv = rospy.Service('/hdc2460_estop', estop_srv, self.SetEstop)
     self.msg = hdc2460_msgs()
-    self.safe_flag = False
+    self.safe_flag = True
     rate = rospy.Rate(10)
     print("11111")
     while not rospy.is_shutdown():
@@ -81,18 +81,23 @@ class MyDriver:
         print ("joystick mode")
 
     if self.safe_flag == True:
-        a = msg.axes[1]
-        alpha = msg.axes[3]*0.785
-        self.ch1_pwm = int(((-alpha*2.44))*400)
-        self.ch2_pwm = int(((alpha*2.44))*400)
-        if self.ch1_pwm<990 and self.ch1_pwm>-990:
-              self.ch1_pwm = self.ch1_pwm
-        else:
-          self.ch1_pwm = (self.ch1_pwm/abs(self.ch1_pwm))*990
-        if self.ch2_pwm<990 and self.ch2_pwm>-990:
-          self.ch2_pwm = self.ch2_pwm
-        else:
-          self.ch2_pwm = (self.ch2_pwm/abs(self.ch2_pwm))*990
+        if(msg.buttons[4]==1):
+          a = msg.axes[1]
+          alpha = msg.axes[3]*0.785
+          self.ch1_pwm = int(((-alpha*2.44))*400)
+          self.ch2_pwm = int(((alpha*2.44))*400)
+          if self.ch1_pwm<800 and self.ch1_pwm>-800:
+            self.ch1_pwm = self.ch1_pwm
+          else:
+            self.ch1_pwm = (self.ch1_pwm/abs(self.ch1_pwm))*800
+          if self.ch2_pwm<800 and self.ch2_pwm>-800:
+            self.ch2_pwm = self.ch2_pwm
+          else:
+            self.ch2_pwm = (self.ch2_pwm/abs(self.ch2_pwm))*800
+    
+        elif msg.buttons[4] == 0:
+            self.ch1_pwm = 0
+            self.ch2_pwm = 0
 
   def SetEstop(self, req):
     command = "!EX\r"if req.enable_estop.data else "!MG\r"
