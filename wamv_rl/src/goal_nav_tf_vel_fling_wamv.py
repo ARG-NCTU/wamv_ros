@@ -7,7 +7,7 @@ import math
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import PoseStamped, Twist
 from sensor_msgs.msg import LaserScan, Joy
-from std_msgs.msg import Bool, String, Float32MultiArray
+from std_msgs.msg import Bool, String, Float32MultiArray, Float32
 from scipy.spatial.transform import Rotation as R
 
 class GoalNav(object):
@@ -35,10 +35,10 @@ class GoalNav(object):
         self.x = 0
         self.y = 0
         self.depth = 0
-        self.bb_x_min = 580
-        self.bb_x_max = 640
-        self.depth_min = 1.8
-        self.depth_max = 2.2
+        self.bb_x_min = 300
+        self.bb_x_max = 1000
+        self.depth_min = 0
+        self.depth_max = 4
         self.shooting_command = Float32()
         self.time_diff = 0
         self.velocity = 0
@@ -152,7 +152,7 @@ class GoalNav(object):
             self.velocity_track[:-1] = self.velocity_track[1:]
             self.velocity_track[-1] = float(self.velocity)
         # print("pos_track: ", self.pos_track)
-        print("velocity_track: ", self.velocity_track)
+        # print("velocity_track: ", self.velocity_track)
         self.last_pos = new_pos
         self.last_time = time
 
@@ -168,6 +168,7 @@ class GoalNav(object):
 
     def inference(self, event):
         if self.goal is None:
+            print("no goal")
             return
         if self.pos_track is None:
             return
@@ -175,7 +176,7 @@ class GoalNav(object):
             return
         if self.auto == 0:
             return
-
+        
         if self.reach_goal == True:
             if(self.bb_x_min <= self.x <= self.bb_x_max):
                 cmd = Twist()
@@ -188,7 +189,7 @@ class GoalNav(object):
             elif(self.x<self.bb_x_min):
                 cmd = Twist()
                 cmd.linear.x = 0
-                cmd.angular.z = 0.3
+                cmd.angular.z = -0.3
                 self.bb_angle = False
                 self.pub_cmd.publish(cmd)
                 print("angle bb xmin")
@@ -197,21 +198,28 @@ class GoalNav(object):
             elif(self.x>self.bb_x_max):
                 cmd = Twist()
                 cmd.linear.x = 0
-                cmd.angular.z = -0.3
+                cmd.angular.z = 0.3
                 self.bb_angle = False
                 self.pub_cmd.publish(cmd)
                 print("angle bb xmax")
                 return
 
         if self.reach_goal == True and self.bb_angle == True:
-            if(self.depth_min <= self.depth <=self.depth_max)
+            if(self.depth_min <= self.depth <=self.depth_max):
                 cmd = Twist()
                 cmd.linear.x = 0
                 cmd.angular.z = 0
-                print("Let's Go fucking shooting")
                 self.pub_cmd.publish(cmd)
-                self.shooting_command.data == 1
-                self.pub_shoot.publish(self.shooting_command)
+                if self.count < 30:
+                    self.count += 1
+                if self.count <=20:
+                    print("Let's Go fucking shooting")
+                    self.shooting_command.data = 1
+                    self.pub_shoot.publish(self.shooting_command)
+                else:
+                    # self.count = 0
+                    self.shooting_command.data = 0
+                    self.pub_shoot.publish(self.shooting_command)
             elif(self.depth<=self.depth_min):
                 cmd = Twist()
                 cmd.linear.x = -0.2
@@ -227,7 +235,7 @@ class GoalNav(object):
         dis = np.linalg.norm(self.goal-self.last_pos)
         if dis < self.target_dis:
             rospy.loginfo("goal reached")
-            self.reach_goal == True
+            self.reach_goal = True
             cmd = Twist()
             cmd.linear.x = 0
             cmd.angular.z = 0
