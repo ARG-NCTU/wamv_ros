@@ -5,8 +5,8 @@
     <arg name="veh" default="wamv" />
     <arg name="cmd" default="cmd_vel" />
     <arg name="joy" default="/joy" />
-    <arg name="target_dis" default="3" />
-    <arg name="target_angle" default="0.2" />
+    <arg name="goal_dis" default="3.5" />
+    <arg name="mission" default="docking" />
     <arg name="frame" default="map" />
     <arg name="linear_scale" default="0.3" />
     <arg name="angular_scale" default="0.4" />
@@ -18,12 +18,12 @@
     <!-- map truth_map_posestamped -->
     <group ns="$(arg veh)">
 
-        <node pkg="wamv_rl" type="goal_nav_tf_vel_fling_wamv.py" name="goal_nav_wamv_vel_fling_rl" output="screen">
+        <node pkg="wamv_rl" type="goal_nav_tf_vel_wamv.py" name="goal_nav_wamv_vel_fling_rl" output="screen">
             <param name="frame" value="$(arg frame)" />
+            <param name="goal_dis" value="$(arg goal_dis)" />
+            <param name="mission" value="$(arg mission)" />
             <param name="linear_scale" value="$(arg linear_scale)" />
             <param name="angular_scale" value="$(arg angular_scale)" />
-            <param name="target_dis" value="$(arg target_dis)" />
-            <param name="target_angle" value="$(arg target_angle)" />
             <remap from="goal_in" to="/move_base_simple/goal" />
             <remap from="laser_in" to="RL/scan" />
             <remap from="odom_in" to="localization_gps_imu/pose" />
@@ -31,6 +31,8 @@
             <remap from="cmd_out" to="$(arg cmd)" />
         </node>
 
+        <node pkg="wamv_rl" type="angle_alignment.py" name="angle_alignment" output="screen">
+        </node>
     </group>
 
 
