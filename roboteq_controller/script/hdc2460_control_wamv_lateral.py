@@ -13,7 +13,7 @@ import serial
 class MyDriver:
   def __init__(self):
     self.port = serial.Serial(\
-                  "/dev/ttyACM0", 115200, timeout=1,\
+                  "/dev/ttyroboteq", 115200, timeout=1,\
                   parity=serial.PARITY_NONE,\
                   stopbits=serial.STOPBITS_ONE,\
                   bytesize=serial.EIGHTBITS)
@@ -86,14 +86,14 @@ class MyDriver:
           alpha = msg.axes[3]*0.785
           self.ch1_pwm = int(((-alpha*2.44))*400)
           self.ch2_pwm = int(((alpha*2.44))*400)
-          if self.ch1_pwm<800 and self.ch1_pwm>-800:
+          if self.ch1_pwm<450 and self.ch1_pwm>-450:
             self.ch1_pwm = self.ch1_pwm
           else:
-            self.ch1_pwm = (self.ch1_pwm/abs(self.ch1_pwm))*800
-          if self.ch2_pwm<800 and self.ch2_pwm>-800:
+            self.ch1_pwm = (self.ch1_pwm/abs(self.ch1_pwm))*450
+          if self.ch2_pwm<450 and self.ch2_pwm>-450:
             self.ch2_pwm = self.ch2_pwm
           else:
-            self.ch2_pwm = (self.ch2_pwm/abs(self.ch2_pwm))*800
+            self.ch2_pwm = (self.ch2_pwm/abs(self.ch2_pwm))*450
     
         elif msg.buttons[4] == 0:
             self.ch1_pwm = 0

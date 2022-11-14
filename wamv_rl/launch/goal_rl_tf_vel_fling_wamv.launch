@@ -31,7 +31,7 @@
             <remap from="cmd_out" to="$(arg cmd)" />
         </node>
 
-        <node pkg="wamv_rl" type="angle_alignment.py" name="angle_alignment" output="screen">
+        <node pkg="wamv_rl" type="fling_angle_alignment.py" name="fling_angle_alignment" output="screen">
         </node>
     </group>
 
