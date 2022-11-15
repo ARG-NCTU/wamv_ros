@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <arg name="veh" default="wamv" />
+    <arg name="target_angle" default="0.2" />
+    <arg name="frame" default="map" />
+
+    <!-- map truth_map_posestamped -->
+    <group ns="$(arg veh)">
+        <node pkg="wamv_rl" type="semi_scan_angle_alignment.py" name="semi_scan_angle_alignment" output="screen">
+            <param name="frame" value="$(arg frame)" />
+            <param name="target_angle" value="$(arg target_angle)" />
+        </node>
+    </group>
+
+
+</launch>

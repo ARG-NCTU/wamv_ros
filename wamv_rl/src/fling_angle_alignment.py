@@ -6,7 +6,7 @@ import math
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import PoseStamped, Twist
 from sensor_msgs.msg import LaserScan, Joy
-from std_msgs.msg import Bool, String, Float32MultiArray, Float32, Byte
+from std_msgs.msg import Bool, String, Float32MultiArray, Float32, Byte, Int16
 
 class AngleNav(object):
     def __init__(self):
@@ -22,7 +22,10 @@ class AngleNav(object):
         self.bb_x_min = 600
         self.bb_x_max = 1100
         
-        self.shooting_command = Byte()
+        self.shooting_command = Int16()
+        self.shooting_command.data = 0
+        self.shooting_command_arduino = Byte()
+        self.shooting_command_arduino.data = 0
         self.angle = 0
         self.fling_finish_state = False
         self.nav_fling_action = True
@@ -31,7 +34,8 @@ class AngleNav(object):
 
         # pub cmd
         self.pub_cmd = rospy.Publisher("cmd_vel", Twist, queue_size=1)
-        self.pub_shoot = rospy.Publisher("shooting", Byte, queue_size=1)
+        self.pub_shoot = rospy.Publisher("shoot", Int16, queue_size=1)
+        self.pub_shoot_arduino = rospy.Publisher("shooting", Byte, queue_size=1)
         self.pub_fling_finish_state = rospy.Publisher("fling_finish_state", Bool, queue_size=1)
         self.sub_bb_info = rospy.Subscriber("bb_info", Float32MultiArray, self.cb_bbinfo)
         self.sub_navi_fling_action = rospy.Subscriber("nav_to_fling_action", Bool, self.cb_navi_fling_action)
@@ -76,12 +80,20 @@ class AngleNav(object):
                 if(self.count%30)<=15:
                     if((self.count%30)==1):
                         print("Let's Go shooting")
-                        self.shooting_command.data = 1
+                        self.shooting_command.data+=1
+                        self.shooting_command_arduino.data=1
+                        self.pub_shoot_arduino.publish(self.shooting_command_arduino)
+                        rospy.sleep(0.5)
                         self.pub_shoot.publish(self.shooting_command)
-                else:
-                    print("stop shooting")
-                    self.shooting_command.data = 0
-                    self.pub_shoot.publish(self.shooting_command)
+                        rospy.sleep(0.5)
+                        
+                        # rospy.sleep(1.0)
+                        self.shooting_command_arduino.data=0
+                        self.pub_shoot_arduino.publish(self.shooting_command_arduino)
+                # else:
+                #     print("stop shooting")
+                #     self.shooting_command.data = 0
+                #     self.pub_shoot.publish(self.shooting_command)
 
             elif(self.x<self.bb_x_min):
                 self.fling_finish_state = False
