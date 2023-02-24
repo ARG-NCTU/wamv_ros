@@ -8,8 +8,8 @@
     <arg name="goal_dis" default="5" />
     <arg name="mission" default="path_following" />
     <arg name="frame" default="map" />
-    <arg name="linear_scale" default="0.4" />
-    <arg name="angular_scale" default="0.4" />
+    <arg name="linear_scale" default="0.45" />
+    <arg name="angular_scale" default="0.35" />
 
     <!-- <include file="$(find subt_rl)/launch/pcToLaser_240_sim_wamv.launch">
         <arg name="veh" value="$(arg veh)" />

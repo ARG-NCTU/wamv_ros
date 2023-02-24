@@ -3,7 +3,7 @@
 <launch>
 
     <arg name="veh" default="wamv" />
-    <arg name="target_angle" default="0.2" />
+    <arg name="target_angle" default="0.4" />
     <arg name="frame" default="map" />
 
     <!-- map truth_map_posestamped -->

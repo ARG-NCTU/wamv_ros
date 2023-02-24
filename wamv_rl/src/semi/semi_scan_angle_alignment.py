@@ -17,7 +17,7 @@ class ScanAngleNav(object):
         self.laser_n = 4
         self.pos_n = 10
         self.frame = rospy.get_param("~frame", "map")
-        self.target_angle = rospy.get_param("~target_angle", 0.26)
+        self.target_angle = rospy.get_param("~target_angle", 0.3)
         #0.5
 
         self.count = 0
@@ -89,14 +89,14 @@ class ScanAngleNav(object):
             cmd = Twist()
             cmd.linear.x = 0
             cmd.angular.z = 0
-            if self.count == 50:
+            if self.count == 25:
                 # self.goal = None
                 self.count = 0
                 self.angle_state.data = True
 
         if self.angle_action == True:
             self.pub_cmd.publish(cmd)
-        
+        # self.angle_state.data = True
         self.pub_angle_state.publish(self.angle_state)
         
 
