@@ -163,7 +163,7 @@ include_directories(
 # )
 
 install(PROGRAMS script/hdc2460_control_wamv_lateral.bin
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}/script
 )
 
 ## Mark executables and/or libraries for installation
@@ -189,7 +189,7 @@ install(PROGRAMS script/hdc2460_control_wamv_lateral.bin
 
 install(FILES
   launch/hdc2460_wamv_lateral_bin.launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
 )
 
 #############
