@@ -37,3 +37,6 @@ bags/
 .ipynb
 !/**/.gitkeep
 CATKIN_IGNORE
+
+*.build/
+*.bin
