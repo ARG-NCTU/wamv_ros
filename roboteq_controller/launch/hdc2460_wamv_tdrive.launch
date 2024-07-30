@@ -1,0 +1,4 @@
+<launch>
+  <!--<node name="logitech_gamepad_F710" pkg="joy" type="joy_node"/>-->
+  <node name="roboteq_hdc2460_tdrive" pkg="roboteq_controller" type="hdc2460_control_wamv_tdrive.py" output="screen"/>
+</launch>
