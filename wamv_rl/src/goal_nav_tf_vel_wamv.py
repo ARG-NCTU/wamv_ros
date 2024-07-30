@@ -63,7 +63,7 @@ class GoalNav(object):
         self.sub_laser = rospy.Subscriber(
             "laser_in",  LaserScan, self.cb_laser, queue_size=1)
         self.timer = rospy.Timer(rospy.Duration(0.1), self.inference)
-
+        self.laser_stack = np.ones((4, 241))*self.max_dis
     def scale_pose(self, value):
         if value > 0:
             return math.log(1 + value)
@@ -154,12 +154,16 @@ class GoalNav(object):
 
     def inference(self, event):
         if self.goal is None:
+            print("no goal")
             return
         if self.pos_track is None:
+            print("no pos")
             return
         if self.laser_stack is None:
+            print("no laser")
             return
         if self.auto == 0:
+            print("no auto")
             return
 
         dis = np.linalg.norm(self.goal-self.last_pos)
