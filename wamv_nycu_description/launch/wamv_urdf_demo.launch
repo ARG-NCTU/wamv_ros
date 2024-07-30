@@ -1,0 +1,9 @@
+<launch>
+  <arg name="model" />
+  <param name="robot_description" textfile="$(find wamv_nycu_description)/urdf/wamv_nycu_description_lidar_on_drone.urdf" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <!-- map lidar frame name-->
+  <node pkg="tf" type="static_transform_publisher" name="lidar_frame_broadcaster" args="0 0 0 0 0 0 velodyne_link wamv/lidar_wamv_link 50" />
+
+</launch>

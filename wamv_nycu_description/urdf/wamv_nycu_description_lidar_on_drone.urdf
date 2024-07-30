@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<!--Now LiDAR are placed on drone instead. and no zed -->
+<robot
+  name="wamv_nycu_description"> 
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.14028 3.7755E-05 0.25989"
+        rpy="0 0 0" />
+      <mass
+        value="1299.7" />
+      <inertia
+        ixx="31.631"
+        ixy="-0.16113"
+        ixz="-30.638"
+        iyy="868.3"
+        iyz="-0.0017548"
+        izz="868.5" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wamv_nycu_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wamv_nycu_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="velodyne_link">
+    <inertial>
+      <origin
+        xyz="-0.188762487815318 -9.6644577284098E-07 0.122816024985303"
+        rpy="0 0 0" />
+      <mass
+        value="12.7337859353388" />
+      <inertia
+        ixx="0.0948941866690778"
+        ixy="-1.26547231096271E-07"
+        ixz="1.89605624084633E-07"
+        iyy="0.0950885725877562"
+        iyz="1.30843936126773E-08"
+        izz="0.147742361343186" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wamv_nycu_description/meshes/velodyne_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://wamv_nycu_description/meshes/velodyne_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="velodyne_joint"
+    type="fixed">
+    <origin
+      xyz="0.854662 -0.005351 1.73772"
+      rpy="0 0.087266 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="velodyne_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>
